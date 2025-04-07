@@ -6,6 +6,7 @@ class Cola{
   NodeCola<T>* tail = nullptr;
 
   public:
+  Cola() : head(nullptr), tail(nullptr) {}
   Cola(NodeCola<T>*);
   T front();
   void push(T);
@@ -21,17 +22,17 @@ Cola<T>::Cola(NodeCola<T>* node){
 
 template<class T>
 bool Cola<T>::vacio(){
-  return this ->tail == nullptr;
+  return head == nullptr; 
 }
 
 template<class T>
 void Cola<T>::push(T data){
   if(vacio()){
-    this->head = new Node<T>(data, nullptr);
+    this->head = new NodeCola<T>(data, nullptr);
     this->tail = head;
     return;
   }
-  NodeCola<T> *newNode = new Node<T> (data, nullptr);
+  NodeCola<T> *newNode = new NodeCola<T>(data, nullptr);
   tail->setNext(newNode);
   this->tail=newNode;
   newNode = nullptr;
@@ -40,16 +41,16 @@ void Cola<T>::push(T data){
 
 template<class T>
 void Cola<T>::pop(){
-  int t;
   if(vacio()){
-    cout<<t<<endl;
+    return;
   }
   NodeCola<T>* temp = head;
-  t = temp->getData();
-  head= head->getNext();
+  head = head->getNext();
+  if(head == nullptr){
+      tail = nullptr;
+  }
   delete temp;
-  cout<<t<<endl;
-};
+}
 
 template<class T>
 T Cola<T>::front(){
@@ -57,4 +58,14 @@ T Cola<T>::front(){
     cout<<"La cola está vacía";
   }
   return head->getData();
+}
+
+template<class T>
+void Cola<T>::print(){
+    NodeCola<T>* current = head;
+    while(current != nullptr){
+        cout << current->getData() << " ";
+        current = current->getNext();
+    }
+    cout << endl;
 }
