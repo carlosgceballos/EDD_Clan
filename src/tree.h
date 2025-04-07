@@ -21,6 +21,7 @@ class Tree{
   Node<Clan<T>, List<Contribuyentes<T>>>* findNode(Node<Clan<T>, List<Contribuyentes<T>>>* root, T id);
   void insertNode(Node<Clan<T>, List<Contribuyentes<T>>>* parent, Clan<T> miembro);
   void buildTree(Cola<Clan<T>>& cola);
+  void Tree<T>::preOrder(Node<Clan<T>,List<Contribuyentes<T>>>*root);
 };
 
 template<class T>
@@ -106,4 +107,11 @@ void Tree<T>::buildTree(Cola<Clan<T>>&cola){
     }
   }
   
+}
+template<class T>
+void Tree<T>::preOrder(Node<Clan<T>, List<Contribuyentes<T>>>* root){
+    if(root == nullptr) return;
+    root->getData().print();
+    preOrder(root->getLeft());
+    preOrder(root->getRight());
 }
