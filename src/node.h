@@ -16,7 +16,7 @@ class Node{
   Node(T , U, Node<T, U>*, Node<T, U>*);
   ~Node();
   T getData();
-  U getList();
+  U& getList();
   void setLeft(Node<T, U>*);
   void setRight(Node<T, U>*);
   void setData(T);
@@ -67,7 +67,7 @@ T Node<T, U>::getData(){
 }
 
 template <class T, class U>
-U Node<T, U>::getList(){
+U& Node<T, U>::getList(){
    return this->list;
 }
 

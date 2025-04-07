@@ -1,52 +1,61 @@
-#include "node.h"
+#ifndef LIST_H
+#define LIST_H
+
+#include "nodelist.h"
 #include "contribuyentes.h"
 
 template<class T>
-class List{
+class List {
     private:
-    NodeList<T>* head = nullptr;
+      NodeList<T>* head = nullptr;
     public:
-        List(NodeList<T>*);
-        void insert(T);
-        void insertFirst(T);
-        bool remove(T);
-        bool isEmpty();
-        void print();
+      List();
+      List(NodeList<T>*);
+      void insert(T data);
+      void insertFirst(T data);
+      bool remove(T data);
+      bool isEmpty();
+      void print();
 };
 
 template<class T>
-List<T>::List(NodeList<T>* node){
-    this->head=node;
+List<T>::List() : head(nullptr) {}
+
+template<class T>
+List<T>::List(NodeList<T>* node) {
+    this->head = node;
 }
 
 template<class T>
-bool List<T>::isEmpty(){
+bool List<T>::isEmpty() {
     return this->head == nullptr;
 }
 
 template<class T>
-void List<T>::insertFirst(T data){
+void List<T>::insertFirst(T data) {
     if(isEmpty()){
-        this->head = new NodeList<T>(data,nullptr);
+        this->head = new NodeList<T>(data, nullptr);
         return;
     }
     NodeList<T>* temp = this->head;
-    this->head = new NodeList<T>(data,temp);
-    temp = nullptr;
+    this->head = new NodeList<T>(data, temp);
 }
 
 template<class T>
-void List<T>::insert(T data){
-    if(isEmpty() || data.getGrado()<head->getData().getGrado()){
+void List<T>::insert(T data) {
+    if(isEmpty() || data.getGrado() > head->getData().getGrado() ||
+       (data.getGrado() == head->getData().getGrado() && data.getEdad() > head->getData().getEdad())){
        insertFirst(data);
        return;
     }
 
-    NodeList<T> *newNode =new NodeList<T>(data,nullptr);
-    NodeList<T> *actual = head;
-    NodeList<T> *prev = nullptr;
-      
-    while(actual!=nullptr && actual->getData().getGrado() < data.getGrado() || actual->getData().getGrado() == data.getGrado() && actual->getData().getEdad() < data.getEdad()) {
+    NodeList<T>* newNode = new NodeList<T>(data, nullptr);
+    NodeList<T>* actual = head;
+    NodeList<T>* prev = nullptr;
+
+    while(actual != nullptr && 
+         (actual->getData().getGrado() > data.getGrado() ||
+         (actual->getData().getGrado() == data.getGrado() && actual->getData().getEdad() > data.getEdad()))){
          prev = actual;
          actual = actual->getNext();
     }
@@ -56,33 +65,26 @@ void List<T>::insert(T data){
 }
 
 template<class T>
-bool List<T>::remove(T data){
-
+bool List<T>::remove(T data) {
    if(isEmpty()){
       return false;
    }
 
-   NodeList<T>* NodeToDelete=head;
-
-   NodeList<T>* prev=nullptr;
-
+   NodeList<T>* nodeToDelete = head;
+   NodeList<T>* prev = nullptr;
    
-   while (NodeToDelete!=nullptr && NodeToDelete->getData().getId() !=data->getId())
-   {
-      prev=NodeToDelete;
-      NodeToDelete=NodeToDelete->getNext();
+   while (nodeToDelete != nullptr && nodeToDelete->getData().getId() != data.getId()){
+      prev = nodeToDelete;
+      nodeToDelete = nodeToDelete->getNext();
    }
 
-   if(NodeToDelete!=nullptr){
-      if(prev==nullptr){
-         head=NodeToDelete->getNext();
+   if(nodeToDelete != nullptr){
+      if(prev == nullptr){
+         head = nodeToDelete->getNext();
+      } else {
+         prev->setNext(nodeToDelete->getNext());
       }
-      else{
-         prev->setNext(NodeToDelete->getNext());
-      }
-
-
-      delete NodeToDelete;
+      delete nodeToDelete;
       return true;
    }
    
@@ -90,13 +92,13 @@ bool List<T>::remove(T data){
 }
 
 template<class T>
-void List<T>::print(){
-    NodeList<T>* actual = head;
-    cout<<head<<endl;
-    while (actual != nullptr)
-    {
-       actual->print();
-       actual = actual->getNext();
+void List<T>::print() {
+    NodeList<T>* current = head;
+    while(current != nullptr){
+        current->getData().print();
+        std::cout << std::endl;
+        current = current->getNext();
     }
-    
 }
+
+#endif // LIST_H
