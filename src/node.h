@@ -1,3 +1,6 @@
+#ifndef NODE_H
+#define NODE_H
+
 #include <iostream>
 #include <string>
 
@@ -77,3 +80,5 @@ template <class T, class U>
 Node<T, U>* Node<T, U>::getRight(){
    return this->right;
 }
+
+#endif
