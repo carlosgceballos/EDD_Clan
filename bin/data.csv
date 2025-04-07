@@ -1,0 +1,18 @@
+id,first_name,last_name,gender,age,id_father,is_dead,was_chief,is_chief
+01,Sho,Kusakabe,M,92,null,1,1,0
+08,Jin,Sakabe,M,70,04,0,1,0
+02,Shinra,Kusakabe,M,85,01,1,1,0
+16,Shina,Sakabe,W,8,08,0,0,0
+17,Maki II,Sakabe,W,4,08,0,0,0
+05,Kawa,Kusakabe,M,90,02,0,1,0
+04,Maki,Kusakabe,W,95,02,1,0,0
+09,Jina,Sakabe,W,45,04,0,0,0
+03,Arthur,Kusakabe,M,90,01,1,0,0
+12,Sho II,Kusakabe,M,16,06,0,0,1
+14,Maki III,Kasabe,W,14,07,0,0,0
+15,Kimashi,Kasabe,W,12,07,0,0,0
+13,Shinra II,Kusakabe,M,14,06,0,0
+06,Joseph,Kusakabe,M,72,03,0,0,0
+07,Haumea,Kusakabe,W,65,03,0,0,0
+10,Fab,Kusakabe,W,50,05,0,0,0
+11,Kira,Kusakabe,W,35,05,0,0,0
