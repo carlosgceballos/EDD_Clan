@@ -157,3 +157,38 @@ void Tree<T>::buildTreeFromCSV(const string &filename) {
 
     buildTree(colaClan);
 }
+template<class T>
+void Tree<T>::readContribuyentesFromCSV(const string &filename) {
+    ifstream file(filename);
+    if (!file.is_open()){
+        cerr << "Error al abrir el archivo: " << filename << endl;
+        return;
+    }
+    
+    string line;
+    getline(file, line); 
+
+    while(getline(file, line)){
+        stringstream ss(line);
+        string id, idBenef, nombre, edadStr, contribucion, gradContStr;
+        
+        getline(ss, id, ',');
+        getline(ss, idBenef, ',');
+        getline(ss, nombre, ',');
+        getline(ss, edadStr, ',');
+        getline(ss, contribucion, ',');
+        getline(ss, gradContStr, ',');
+        
+        int edad = stoi(edadStr);
+        int gradCont = stoi(gradContStr);
+
+        Contribuyentes<T> contribObj(id, idBenef, nombre, edad, contribucion, gradCont);
+        Node<Clan<T>, List<Contribuyentes<T>>>* nodo = findNode(founder, idBenef);
+        if(nodo != nullptr) {
+            nodo->getList().insert(contribObj);
+        } else {
+            cerr << "No se encontró nodo con id: " << idBenef << endl;
+        }
+    }
+    file.close();
+}
