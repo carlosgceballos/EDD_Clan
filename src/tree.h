@@ -26,6 +26,7 @@ class Tree{
   void preOrder(Node<Clan<T>, List<Contribuyentes<T>>>* root);
   void buildTreeFromCSV(const string &filename);
   void readContribuyentesFromCSV(const string &filename);
+  void modificarDatosNodo();
 };
 
 template<class T>
@@ -191,4 +192,105 @@ void Tree<T>::readContribuyentesFromCSV(const string &filename) {
         }
     }
     file.close();
+}
+
+template<class T>
+void Tree<T>::modificarDatosNodo() {
+    T id;
+    cout << "Ingrese el id del nodo a modificar: ";
+    cin >> id;
+    
+    Node<Clan<T>, List<Contribuyentes<T>>>* nodo = findNode(founder, id);
+    if(nodo == nullptr) {
+         cout << "No se encontró un nodo con el id: " << id << endl;
+         return;
+    }
+    
+    Clan<T> clan = nodo->getData();
+    bool continuar = true;
+    
+    while(continuar) {
+         cout << "\nNodo encontrado:\n";
+         clan.print();
+         cout << "\nSeleccione el campo a modificar:" << endl;
+         cout << "1. Nombre" << endl;
+         cout << "2. Apellido" << endl;
+         cout << "3. Género" << endl;
+         cout << "4. Edad" << endl;
+         cout << "5. Estado (0: vivo, 1: muerto)" << endl;
+         cout << "6. Fue jefe (0 o 1)" << endl;
+         cout << "7. Es jefe (0 o 1)" << endl;
+         cout << "8. Salir" << endl;
+         
+         int opcion;
+         cin >> opcion;
+         cin.ignore();
+         
+         switch(opcion) {
+             case 1: {
+                     string nuevoNombre;
+                     cout << "Ingrese el nuevo nombre: ";
+                     getline(cin, nuevoNombre);
+                     clan.setName(nuevoNombre);
+                 }
+                 break;
+             case 2: {
+                     string nuevoApellido;
+                     cout << "Ingrese el nuevo apellido: ";
+                     getline(cin, nuevoApellido);
+                     clan.setLastName(nuevoApellido);
+                 }
+                 break;
+             case 3: {
+                     char nuevoGenero;
+                     cout << "Ingrese el nuevo género (H/M): ";
+                     cin >> nuevoGenero;
+                     clan.setGender(nuevoGenero);
+                     cin.ignore();
+                 }
+                 break;
+             case 4: {
+                     int nuevaEdad;
+                     cout << "Ingrese la nueva edad: ";
+                     cin >> nuevaEdad;
+                     clan.setAge(nuevaEdad);
+                     cin.ignore();
+                 }
+                 break;
+             case 5: {
+                     int estado;
+                     cout << "Ingrese el estado (0 para vivo, 1 para muerto): ";
+                     cin >> estado;
+                     bool isDead = (estado == 1);
+                     clan.setIsDead(isDead);
+                     cin.ignore();
+                 }
+                 break;
+             case 6: {
+                     int fueJefe;
+                     cout << "Ingrese 0 (false) o 1 (true) para 'fue jefe': ";
+                     cin >> fueJefe;
+                     clan.setWasChief(fueJefe);
+                     cin.ignore();
+                 }
+                 break;
+             case 7: {
+                     int esJefe;
+                     cout << "Ingrese 0 (false) o 1 (true) para 'es jefe': ";
+                     cin >> esJefe;
+                     clan.setIsChief(esJefe);
+                     cin.ignore();
+                 }
+                 break;
+             case 8:
+                 continuar = false;
+                 break;
+             default:
+                 cout << "Opción no válida." << endl;
+         }
+    }
+
+    nodo->setData(clan);
+    cout << "\nNodo modificado exitosamente:\n";
+    clan.print();
 }
