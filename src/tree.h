@@ -42,7 +42,7 @@ class Tree{
   void readContribuyentesFromCSV(const string &filename);
   void modificarDatosNodo();
   void actualizarLider();
-  void verificarLider();
+  void mostrarLineaSucesion();
 };
 
 template<class T>
@@ -641,4 +641,43 @@ Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::BuscarEnAncestra(Node<Clan<T>, 
     }
 
     return BuscarEnAncestra(padre);
+}
+
+template<class T>
+void recorrerAux(Node<Clan<T>, List<Contribuyentes<T>>>* node, Cola<Clan<T>> &cola) {
+    if (node == nullptr)
+        return;
+    cola.push(node->getData());
+    preOrderToQueue(node->getLeft(), cola);
+    preOrderToQueue(node->getRight(), cola);
+}
+
+template<class T>
+void Tree<T>::mostrarLineaSucesion() {
+    Cola<Clan<T>> colaNodos;
+    recorrerAux(founder, colaNodos);
+
+    Tree<T> auxTree;
+    auxTree.buildTree(colaNodos);
+
+    Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider = auxTree.buscarLider(auxTree.getFounder());
+    Node<Clan<T>, List<Contribuyentes<T>>>* sucesor = nullptr;
+
+    while (nodoLider != nullptr) {
+         cout<<"\nLider actual:\n";
+         nodoLider->getData().print();
+         cout << "--------------------" << endl;
+
+         Clan<T> leaderData = nodoLider->getData();
+         leaderData.setIsChief(false);
+         leaderData.setWasChief(true);
+         leaderData.setIsDead(true);
+         nodoLider->setData(leaderData);
+
+         sucesor = auxTree.buscarSucesor(nodoLider);
+
+         if (sucesor == nullptr)
+             break;
+         nodoLider = sucesor;
+    }
 }
