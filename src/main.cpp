@@ -45,6 +45,8 @@ int main() {
             }
             break;
             case 4:{
+                clanTree.mostrarLineaSucesion();
+                cin.get();
             }
             break;
             case 5:{
