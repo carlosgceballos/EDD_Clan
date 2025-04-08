@@ -167,7 +167,7 @@ void Clan<T>::setIsChief(bool is_chief){
 
 template<class T>
 void Clan<T>::print(){
-  cout << "ID: " << Id << endl;
+cout << "ID: " << Id << endl;
 cout << "Nombre: " << Name<< endl;
 cout << "Apellido: " << last_Name<< endl;
 cout << "Genero: " << gender << endl;

@@ -35,7 +35,12 @@ int main() {
                 cin>>id;
                 cout<<"\n";
                 clanTree.findNode(clanTree.getFounder(),id)->getData().print();
-                clanTree.findNode(clanTree.getFounder(),id)->getList().print();
+                if(clanTree.findNode(clanTree.getFounder(),id)->getList().isEmpty()){
+                    cout<<"Su lista de contribuyentes esta vacia\n";
+                }else{
+                    cout<<"Lista de contribuyentes:\n";
+                    clanTree.findNode(clanTree.getFounder(),id)->getList().print();
+                }
                 cin.get();
             }
             break;
@@ -53,6 +58,11 @@ int main() {
                 cout<<"\nLider actual:\n";
                 liderActual = clanTree.buscarLider(clanTree.getFounder());
                 liderActual->getData().print();
+                if(liderActual->getList().isEmpty()){
+                    cout<<"Su lista de contribuyentes esta vacia.\n\n";
+                }else{
+                    liderActual->getList().print();
+                }
                 cin.get();
             }
             break;

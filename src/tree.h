@@ -129,7 +129,13 @@ template<class T>
 void Tree<T>::preOrder(Node<Clan<T>, List<Contribuyentes<T>>>* root){
     if(root == nullptr) return;
     root->getData().print();
-    root->getList().print();
+    if(root->getList().isEmpty()){
+        cout<<"Su lista de contribuyentes esta vacia.\n";
+    }else{
+        cout<<"Lista de contribuyentes:\n";
+        root->getList().print();
+    }
+    cout << "--------------------" << endl;
     preOrder(root->getLeft());
     preOrder(root->getRight());
 }
