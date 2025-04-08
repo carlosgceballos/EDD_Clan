@@ -648,8 +648,8 @@ void recorrerAux(Node<Clan<T>, List<Contribuyentes<T>>>* node, Cola<Clan<T>> &co
     if (node == nullptr)
         return;
     cola.push(node->getData());
-    preOrderToQueue(node->getLeft(), cola);
-    preOrderToQueue(node->getRight(), cola);
+    recorrerAux(node->getLeft(), cola);
+    recorrerAux(node->getRight(), cola);
 }
 
 template<class T>
