@@ -50,7 +50,7 @@ int main() {
             }
             break;
             case 5:{
-                cout<<"Lider actual:\n";
+                cout<<"\nLider actual:\n";
                 liderActual = clanTree.buscarLider(clanTree.getFounder());
                 liderActual->getData().print();
                 cin.get();

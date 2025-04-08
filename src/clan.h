@@ -175,5 +175,5 @@ cout << "Edad: " << age << endl;
 cout << "ID del Padre: " << Id_Father << endl;
 cout << "Esta muerto: " << is_dead << endl;
 cout << "Fue jefe: " << was_chief << endl;
-cout << "Es jefe: " << is_chief << endl;
+cout << "Es jefe: " << is_chief << endl<<endl;
 }

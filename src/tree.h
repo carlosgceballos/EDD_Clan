@@ -206,7 +206,7 @@ void Tree<T>::readContribuyentesFromCSV(const string &filename) {
         if(nodo != nullptr) {
             nodo->getList().insert(contribObj);
         } else {
-            cerr << "No se encontró nodo con id: " << idBenef << endl;
+            cerr << "No se encontro nodo con id: " << idBenef << endl;
         }
     }
     file.close();
@@ -234,7 +234,7 @@ void Tree<T>::modificarDatosNodo() {
          cout << "\nSeleccione el campo a modificar:" << endl;
          cout << "1. Nombre" << endl;
          cout << "2. Apellido" << endl;
-         cout << "3. Género" << endl;
+         cout << "3. Genero" << endl;
          cout << "4. Edad" << endl;
          cout << "5. Estado (0: vivo, 1: muerto)" << endl;
          cout << "6. Fue jefe (0 o 1)" << endl;
@@ -262,7 +262,7 @@ void Tree<T>::modificarDatosNodo() {
                  break;
              case 3: {
                      char nuevoGenero;
-                     cout << "Ingrese el nuevo género (H/M): ";
+                     cout << "Ingrese el nuevo genero (M/W): ";
                      cin >> nuevoGenero;
                      clan.setGender(nuevoGenero);
                      cin.ignore();
@@ -305,7 +305,7 @@ void Tree<T>::modificarDatosNodo() {
                  continuar = false;
                  break;
              default:
-                 cout << "Opción no válida." << endl;
+                 cout << "Opcion no valida." << endl;
          }
     }
 
@@ -662,11 +662,12 @@ void Tree<T>::mostrarLineaSucesion() {
 
     Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider = auxTree.buscarLider(auxTree.getFounder());
     Node<Clan<T>, List<Contribuyentes<T>>>* sucesor = nullptr;
+    
+    cout<<"\nLider actual:\n";
+    nodoLider->getData().print();
+    cout << "--------------------" << endl;
 
     while (nodoLider != nullptr) {
-         cout<<"\nLider actual:\n";
-         nodoLider->getData().print();
-         cout << "--------------------" << endl;
 
          Clan<T> leaderData = nodoLider->getData();
          leaderData.setIsChief(false);
@@ -679,5 +680,9 @@ void Tree<T>::mostrarLineaSucesion() {
          if (sucesor == nullptr)
              break;
          nodoLider = sucesor;
+
+         cout<<"\nLinea de sucesion:\n";
+         nodoLider->getData().print();
+         cout << "--------------------" << endl;
     }
 }
