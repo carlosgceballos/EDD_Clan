@@ -30,6 +30,11 @@ class Tree{
   Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnAncestro(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
   Node<Clan<T>, List<Contribuyentes<T>>>* buscarPadre(Node<Clan<T>, List<Contribuyentes<T>>>* current, Node<Clan<T>, List<Contribuyentes<T>>>* target);
   Node<Clan<T>, List<Contribuyentes<T>>>* buscarSucesor(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  Node<Clan<T>, List<Contribuyentes<T>>>* buscarEnHijas(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnHermana(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnTia(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnAncestra(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+
   void insertNode(Node<Clan<T>, List<Contribuyentes<T>>>* parent, Clan<T> miembro);
   void buildTree(Cola<Clan<T>>& cola);
   void preOrder(Node<Clan<T>, List<Contribuyentes<T>>>* root);
@@ -37,10 +42,7 @@ class Tree{
   void readContribuyentesFromCSV(const string &filename);
   void modificarDatosNodo();
   void actualizarLider();
-  Node<Clan<T>, List<Contribuyentes<T>>>* buscarEnHijas(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
-  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnHermana(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
-  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnTia(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
-  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnAncestra(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  void verificarLider();
 };
 
 template<class T>
@@ -210,6 +212,7 @@ void Tree<T>::readContribuyentesFromCSV(const string &filename) {
     file.close();
 }
 
+//ya en proyecto
 template<class T>
 void Tree<T>::modificarDatosNodo() {
     T id;
@@ -308,8 +311,9 @@ void Tree<T>::modificarDatosNodo() {
 
     nodo->setData(clan);
     cout << "\nNodo modificado exitosamente:\n";
-    clan.print();
 }
+
+//
 
 template<class T>
 Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarLider(Node<Clan<T>, List<Contribuyentes<T>>>* root) {
@@ -326,7 +330,7 @@ Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarLider(Node<Clan<T>, List<
 template<class T>
 Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarSucesor(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider) {
     if(nodoLider == nullptr)
-        return nullptr;
+    return nullptr;
 
     Node<Clan<T>, List<Contribuyentes<T>>>* candidato = buscarEnHijos(nodoLider);
     if(candidato != nullptr)
@@ -362,22 +366,17 @@ Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarSucesor(Node<Clan<T>, Lis
 
 }
 
-
 template<class T>
 void Tree<T>::actualizarLider(){
     Node<Clan<T>,List<Contribuyentes<T>>>* nodoLider = buscarLider(founder);
     if(nodoLider == nullptr){
-        cout << "No se encontró líder." << endl;
         return;
     }
 
     if(nodoLider->getData().getAlive() == false && nodoLider->getData().getAge() < 70){
-        cout << "El líder actual sigue siendo válido." << endl;
-        nodoLider->getData().print();
         return;
     }
 
-    // Actualizamos el líder inactivo: ya no es jefe y se marca como que ya fue jefe.
     Clan<T> leaderData = nodoLider->getData();
     leaderData.setIsChief(false);
     leaderData.setWasChief(true);
@@ -385,13 +384,12 @@ void Tree<T>::actualizarLider(){
 
     Node<Clan<T>,List<Contribuyentes<T>>>* sucesor = buscarSucesor(nodoLider);
     if(sucesor == nullptr){
-        cout << "No se encontró sucesor que cumpla los requisitos." << endl;
         return;
     }
-    cout << "Actualizando sucesor..." << endl;
     Clan<T> sucesorData = sucesor->getData();
     sucesorData.setIsChief(true);
     sucesor->setData(sucesorData);
+    cout<<"Actualizando lider...\n";
 }
 
 
@@ -547,6 +545,7 @@ Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::BuscarEnAncestro(Node<Clan<T>, 
 
     return BuscarEnAncestro(padre);
 }
+
 // algoritmo para hijas
 template<class T>
 Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarEnHijas(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider) {
