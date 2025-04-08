@@ -341,8 +341,27 @@ Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarSucesor(Node<Clan<T>, Lis
         return candidato;
     
     candidato = BuscarEnAncestro(nodoLider);
+    if(candidato != nullptr)
     return candidato;
+
+    candidato = buscarEnHijas(nodoLider);
+    if(candidato!=nullptr)
+    return candidato;
+
+    candidato = BuscarEnHermana(nodoLider);
+    if(candidato!=nullptr)
+    return candidato;
+
+    candidato = BuscarEnTia(nodoLider);
+    if(candidato!=nullptr)
+    return candidato;
+
+    candidato= BuscarEnAncestra(nodoLider);
+    if(candidato!=nullptr)
+    return candidato;
+
 }
+
 
 template<class T>
 void Tree<T>::actualizarLider(){
