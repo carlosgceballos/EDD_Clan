@@ -206,7 +206,6 @@ void Tree<T>::readContribuyentesFromCSV(const string &filename) {
     file.close();
 }
 
-//ya en proyecto
 template<class T>
 void Tree<T>::modificarDatosNodo() {
     T id;
@@ -307,8 +306,6 @@ void Tree<T>::modificarDatosNodo() {
     cout << "\nNodo modificado exitosamente:\n";
     clan.print();
 }
-
-//
 
 template<class T>
 Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarLider(Node<Clan<T>, List<Contribuyentes<T>>>* root) {
