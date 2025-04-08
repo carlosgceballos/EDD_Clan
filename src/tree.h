@@ -21,12 +21,22 @@ class Tree{
   ~Tree();
   Node<Clan<T>, List<Contribuyentes<T>>>* getFounder();
   Node<Clan<T>, List<Contribuyentes<T>>>* findNode(Node<Clan<T>, List<Contribuyentes<T>>>* root, T id);
+  Node<Clan<T>, List<Contribuyentes<T>>>* buscarLider(Node<Clan<T>, List<Contribuyentes<T>>>* root);  
+  Node<Clan<T>, List<Contribuyentes<T>>>* buscarEnHijos(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  Node<Clan<T>, List<Contribuyentes<T>>>* buscarHermano(Node<Clan<T>, List<Contribuyentes<T>>>* nodo);
+  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnHermano(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  Node<Clan<T>, List<Contribuyentes<T>>>* buscarTio(Node<Clan<T>, List<Contribuyentes<T>>>* nodo);
+  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnTio(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  Node<Clan<T>, List<Contribuyentes<T>>>* BuscarEnAncestro(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
+  Node<Clan<T>, List<Contribuyentes<T>>>* buscarPadre(Node<Clan<T>, List<Contribuyentes<T>>>* current, Node<Clan<T>, List<Contribuyentes<T>>>* target);
+  Node<Clan<T>, List<Contribuyentes<T>>>* buscarSucesor(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider);
   void insertNode(Node<Clan<T>, List<Contribuyentes<T>>>* parent, Clan<T> miembro);
   void buildTree(Cola<Clan<T>>& cola);
   void preOrder(Node<Clan<T>, List<Contribuyentes<T>>>* root);
   void buildTreeFromCSV(const string &filename);
   void readContribuyentesFromCSV(const string &filename);
   void modificarDatosNodo();
+  void actualizarLider();
 };
 
 template<class T>
@@ -134,6 +144,7 @@ void Tree<T>::buildTreeFromCSV(const string &filename) {
     while(getline(file, line)){
         stringstream ss(line);
         string id, name, last_name, genderStr, ageStr, id_father, is_deadStr, was_chiefStr, is_chiefStr;
+
         getline(ss, id, ',');
         getline(ss, name, ',');
         getline(ss, last_name, ',');
@@ -158,6 +169,7 @@ void Tree<T>::buildTreeFromCSV(const string &filename) {
 
     buildTree(colaClan);
 }
+
 template<class T>
 void Tree<T>::readContribuyentesFromCSV(const string &filename) {
     ifstream file(filename);
@@ -194,6 +206,7 @@ void Tree<T>::readContribuyentesFromCSV(const string &filename) {
     file.close();
 }
 
+//ya en proyecto
 template<class T>
 void Tree<T>::modificarDatosNodo() {
     T id;
@@ -293,4 +306,224 @@ void Tree<T>::modificarDatosNodo() {
     nodo->setData(clan);
     cout << "\nNodo modificado exitosamente:\n";
     clan.print();
+}
+
+//
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarLider(Node<Clan<T>, List<Contribuyentes<T>>>* root) {
+    if (root == nullptr)
+        return nullptr;
+    if (root->getData().getRol() == true)
+        return root;
+    Node<Clan<T>, List<Contribuyentes<T>>>* leftResult = buscarLider(root->getLeft());
+    if (leftResult != nullptr)
+        return leftResult;
+    return buscarLider(root->getRight());
+}
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarSucesor(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider) {
+    if(nodoLider == nullptr)
+        return nullptr;
+
+    Node<Clan<T>, List<Contribuyentes<T>>>* candidato = buscarEnHijos(nodoLider);
+    if(candidato != nullptr)
+        return candidato;
+    
+    candidato = BuscarEnHermano(nodoLider);
+    if(candidato != nullptr)
+        return candidato;
+    
+    candidato = BuscarEnTio(nodoLider);
+    if(candidato != nullptr)
+        return candidato;
+    
+    candidato = BuscarEnAncestro(nodoLider);
+    return candidato;
+}
+
+template<class T>
+void Tree<T>::actualizarLider(){
+    Node<Clan<T>,List<Contribuyentes<T>>>* nodoLider = buscarLider(founder);
+    if(nodoLider == nullptr){
+        cout << "No se encontró líder." << endl;
+        return;
+    }
+
+    if(nodoLider->getData().getAlive() == false && nodoLider->getData().getAge() < 70){
+        cout << "El líder actual sigue siendo válido." << endl;
+        nodoLider->getData().print();
+        return;
+    }
+
+    // Actualizamos el líder inactivo: ya no es jefe y se marca como que ya fue jefe.
+    Clan<T> leaderData = nodoLider->getData();
+    leaderData.setIsChief(false);
+    leaderData.setWasChief(true);
+    nodoLider->setData(leaderData);
+
+    Node<Clan<T>,List<Contribuyentes<T>>>* sucesor = buscarSucesor(nodoLider);
+    if(sucesor == nullptr){
+        cout << "No se encontró sucesor que cumpla los requisitos." << endl;
+        return;
+    }
+    cout << "Actualizando sucesor..." << endl;
+    Clan<T> sucesorData = sucesor->getData();
+    sucesorData.setIsChief(true);
+    sucesor->setData(sucesorData);
+}
+
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarHermano(Node<Clan<T>, List<Contribuyentes<T>>>* nodo) {
+    if(nodo == nullptr)
+        return nullptr;
+    
+    T idFather = nodo->getData().getId_Father();
+    
+    if(idFather == "null" || idFather == "")
+        return nullptr;
+    
+    Node<Clan<T>, List<Contribuyentes<T>>>* padre = findNode(founder, idFather);
+    if(padre == nullptr)
+        return nullptr;
+    
+    if(padre->getLeft() != nullptr && padre->getLeft() != nodo)
+        return padre->getLeft();
+
+    if(padre->getRight() != nullptr && padre->getRight() != nodo)
+        return padre->getRight();
+
+    return nullptr;
+}
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarTio(Node<Clan<T>, List<Contribuyentes<T>>>* nodo) {
+    if(nodo == nullptr)
+        return nullptr;
+    
+    T idFather = nodo->getData().getId_Father();
+    if(idFather == "null" || idFather == "")
+        return nullptr;
+    
+    Node<Clan<T>, List<Contribuyentes<T>>>* padre = findNode(founder, idFather);
+    Node<Clan<T>, List<Contribuyentes<T>>>* tio = buscarHermano(padre);
+
+    if(tio == nullptr)
+        return nullptr;
+    
+    return tio;
+}
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarEnHijos(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider) {
+    if (nodoLider == nullptr)
+        return nullptr;
+
+    Node<Clan<T>, List<Contribuyentes<T>>>* candidato = nullptr;
+    if (nodoLider->getLeft() != nullptr) {
+        if (nodoLider->getLeft()->getData().getGender() == 'M' &&
+            nodoLider->getLeft()->getData().getAlive() == false &&
+            nodoLider->getLeft()->getData().getAge() < 70) {
+            candidato = nodoLider->getLeft();
+        }
+    }
+    if (nodoLider->getRight() != nullptr) {
+        if (nodoLider->getRight()->getData().getGender() == 'M' &&
+            nodoLider->getRight()->getData().getAlive() == false &&
+            nodoLider->getRight()->getData().getAge() < 70) {
+            if (candidato == nullptr)
+                candidato = nodoLider->getRight();
+            else if (nodoLider->getRight()->getData().getAge() > candidato->getData().getAge())
+                candidato = nodoLider->getRight();
+        }
+    }
+    if (candidato != nullptr)
+        return candidato;
+    
+    if (nodoLider->getLeft() != nullptr && nodoLider->getRight() != nullptr) {
+        if (nodoLider->getLeft()->getData().getAge() >= nodoLider->getRight()->getData().getAge()) {
+            candidato = buscarEnHijos(nodoLider->getLeft());
+            if (candidato != nullptr)
+                return candidato;
+            else
+                return buscarEnHijos(nodoLider->getRight());
+        } else {
+            candidato = buscarEnHijos(nodoLider->getRight());
+            if (candidato != nullptr)
+                return candidato;
+            else
+                return buscarEnHijos(nodoLider->getLeft());
+        }
+    } else if (nodoLider->getLeft() != nullptr) {
+        return buscarEnHijos(nodoLider->getLeft());
+    } else if (nodoLider->getRight() != nullptr) {
+        return buscarEnHijos(nodoLider->getRight());
+    } else {
+        return nullptr; 
+    }
+}
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::BuscarEnHermano(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider){
+    Node<Clan<T>, List<Contribuyentes<T>>>* hermano = buscarHermano(nodoLider);
+    if(hermano == nullptr){
+        return nullptr;
+    }
+
+    Node<Clan<T>, List<Contribuyentes<T>>>* candidato = buscarEnHijos(hermano);
+    if(candidato != nullptr)
+        return candidato;
+    
+    if(hermano->getData().getGender() == 'M' && hermano->getData().getAlive() == false && hermano->getData().getAge() < 70) {
+        return hermano;
+    }
+
+    return nullptr;
+}
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::BuscarEnTio(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider){
+    Node<Clan<T>, List<Contribuyentes<T>>>* tio = buscarTio(nodoLider);
+
+    Node<Clan<T>, List<Contribuyentes<T>>>* candidato = buscarEnHijos(tio);
+    if(candidato != nullptr)
+        return candidato;
+    
+    if(tio->getData().getGender() == 'M' && tio->getData().getAlive() == false && tio->getData().getAge() < 70) {
+        return tio;
+    }
+
+    return nullptr;
+}
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::buscarPadre(Node<Clan<T>, List<Contribuyentes<T>>>* current, Node<Clan<T>, List<Contribuyentes<T>>>* target) {
+    if(current == nullptr)
+        return nullptr;
+    if(current->getLeft() == target || current->getRight() == target)
+        return current;
+    Node<Clan<T>, List<Contribuyentes<T>>>* res = buscarPadre(current->getLeft(), target);
+    if(res != nullptr)
+        return res;
+    return buscarPadre(current->getRight(), target);
+}
+
+template<class T>
+Node<Clan<T>, List<Contribuyentes<T>>>* Tree<T>::BuscarEnAncestro(Node<Clan<T>, List<Contribuyentes<T>>>* nodoLider) {
+    if(nodoLider == founder)
+        return nullptr;
+
+    Node<Clan<T>, List<Contribuyentes<T>>>* padre = buscarPadre(founder, nodoLider);
+    if(padre == nullptr)
+        return nullptr;
+
+    if(padre->getLeft() != nullptr && padre->getRight() != nullptr) {
+        Node<Clan<T>, List<Contribuyentes<T>>>* candidato = buscarEnHijos(padre);
+        if(candidato != nullptr)
+            return candidato;
+    }
+
+    return BuscarEnAncestro(padre);
 }
