@@ -120,14 +120,9 @@ void Contribuyentes<T>::setGrado(int grado) {
 
 template <class T>
 void Contribuyentes<T>::print() const {
-    cout << "ID: " << getId()
-         << ", Beneficiario: " << getBeneficiario()
-         << ", Nombre: " << getName()
-         << ", Edad: " << getEdad()
+    cout << "ID: " << getId() << ", Nombre: " << getName()<< ", Edad: " << getEdad()
          << ", Contribucion: " << getContribucion()
          << ", Grado: " << getGrado();
 }
 
 #endif 
-
-

@@ -96,9 +96,10 @@ void List<T>::print() {
     NodeList<T>* current = head;
     while(current != nullptr){
         current->getData().print();
-        std::cout << std::endl;
+        cout << endl;
         current = current->getNext();
     }
+    cout<<endl;
 }
 
 #endif // LIST_H

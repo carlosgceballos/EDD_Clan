@@ -129,10 +129,10 @@ template<class T>
 void Tree<T>::preOrder(Node<Clan<T>, List<Contribuyentes<T>>>* root){
     if(root == nullptr) return;
     root->getData().print();
+    root->getList().print();
     preOrder(root->getLeft());
     preOrder(root->getRight());
 }
-
 
 template<class T>
 void Tree<T>::buildTreeFromCSV(const string &filename) {
